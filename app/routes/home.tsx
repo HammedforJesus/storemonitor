@@ -1,5 +1,6 @@
+import { Link } from "react-router";
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +10,12 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <Welcome />;
+  return (
+    <div>
+      <Link className="btn btn-wide" to={'/add-item'}>
+        Add Item
+      </Link>
+      
+    </div>
+  )
 }
