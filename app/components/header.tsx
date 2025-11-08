@@ -1,17 +1,22 @@
 import React from 'react'
-import { useSearchParams } from 'react-router'
+
 
 function Header() {
 
-    const [ searchParams , setSearchParams ] = useSearchParams()
+    
 
     return (
-        <div className='flex items-center justify-between'>
-            <h1>Store Monitor</h1>
+        <div className="p-4 bg-base-200 rounded-xl shadow-md space-y-3">
 
-            <div>
-                <input onChange={e => setSearchParams({ date: e.target.value })} type="date" placeholder="Filter by date" defaultValue={searchParams.get("date") || ""}/>
-            </div>
+            {/* Title on one line */}
+            <h1 className="text-2xl font-bold">
+                Store Monitor 
+                <p className="text-primary ml-1">Eby 99</p>
+            </h1>
+
+            {/* Date input below */}
+            
+
         </div>
     )
 }

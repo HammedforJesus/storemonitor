@@ -3,37 +3,88 @@ import db from '../database';
 import type { Route } from './+types/view-item';
 
 export const loader = async ({ request , params }: Route.LoaderArgs) => {
-    const itemId = params.id;
-    // Fetch item details from the database using itemId
-    const items = await db.query.items.findFirst({
-        where: (items, { eq }) => eq(items.id, itemId),
-        with: { transactions: true }
-    });
+  const itemId = params.id;
 
-    console.log(items);
+  const items = await db.query.items.findFirst({
+    where: (items, { eq }) => eq(items.id, itemId),
+    with: { transactions: true }
+  });
 
-    return items;
+  return items;
 }
 
 function ViewItemPage({ loaderData: data } : Route.ComponentProps) {
   return (
-    <div>
-        <h1 className='text-3xl'>{data?.name}</h1>
+    <div className="p-6 space-y-8">
 
-        <p className='mt-4'>Amount in Stock: {data?.amountInStock}</p>
+      {/* Item Header */}
+      <div className="flex items-center gap-6">
+        <img 
+          src={data?.image} 
+          alt={data?.name} 
+          className="w-32 h-32 object-cover rounded-xl shadow-md"
+        />
 
-        <img src={data?.image} alt={data?.name} className="w-32 h-32 object-cover rounded mt-4" />
-        <h2 className='text-2xl mt-6'>Transactions</h2>
-        <div className='mt-4'>
-            {data?.transactions.map((transaction, index) => (
-                <div key={index} className="p-4 border-b">
-                    <p>Info: {transaction.reason}</p>
-                    <p>Type: {transaction.type}</p>
-                    <p>Quantity: {transaction.quantity}</p>
-                    <p>Date: {new Date(transaction.createdAt).toLocaleDateString()}</p>
-                </div>
-            ))}
+        <div>
+          <h1 className="text-4xl font-bold">{data?.name}</h1>
+          <p className="text-lg mt-2">
+            <span className="font-semibold">Amount in Stock:</span> {data?.amountInStock}
+          </p>
         </div>
+      </div>
+
+      <div className="divider">Transactions</div>
+
+      {/* Transactions List */}
+      <div className="space-y-4">
+        {data?.transactions.length === 0 ? (
+          <div className="alert shadow bg-base-200">
+            <span>No transactions found for this item.</span>
+          </div>
+        ) : (
+          data?.transactions.map((transaction, index) => (
+            <div 
+              key={index} 
+              className="card bg-base-100 shadow-md border border-base-300 p-4"
+            >
+              <div className="space-y-2">
+
+                <p>
+                  <span className="font-semibold">Info:</span> {transaction.reason}
+                </p>
+
+                <p>
+                  <span className="font-semibold">Type:</span>
+                  {" "}
+                  <span 
+                    className={`badge ${
+                      transaction.type === "add" 
+                        ? "badge-success" 
+                        : transaction.type === "remove" 
+                        ? "badge-error" 
+                        : "badge-neutral"
+                    }`}
+                  >
+                    {transaction.type}
+                  </span>
+                </p>
+
+                <p>
+                  <span className="font-semibold">Quantity:</span> {transaction.quantity}
+                </p>
+
+                <p>
+                  <span className="font-semibold">Date:</span>
+                  {" "}
+                  {new Date(transaction.createdAt).toLocaleDateString()}
+                </p>
+
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
     </div>
   )
 }
