@@ -1,6 +1,7 @@
 import React from 'react'
 import db from '../database';
 import type { Route } from './+types/view-item';
+import { Link } from 'react-router';
 
 export const loader = async ({ request , params }: Route.LoaderArgs) => {
   const itemId = params.id;
@@ -33,6 +34,7 @@ function ViewItemPage({ loaderData: data } : Route.ComponentProps) {
         </div>
       </div>
 
+      <Link to="/" className="btn btn-secondary w-full">Back</Link>
       <div className="divider">Transactions</div>
 
       {/* Transactions List */}
